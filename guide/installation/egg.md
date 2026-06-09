@@ -1,6 +1,6 @@
 ## Using CalagopusStats Egg
 
-1. Download and import [`calagopusstats-egg.json`](https://raw.githubusercontent.com/hirzidevs/pterostats/main/calagopusstats-egg.json) egg to your panel.
+1. Download and import [`calagopusstats-egg.json`](https://raw.githubusercontent.com/heyitslumi/calagopusstats/main/calagopusstats-egg.json) egg to your panel.
 
     - Pterodactyl Panel
 

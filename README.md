@@ -1,7 +1,7 @@
 # CalagopusStats
 
 > [!CAUTION]
-> Most of the code was fed to Gemini 3.5 Flash (Medium), and is a fork of [PteroStats](https://github.com/HirziDevs/PteroStats) by HirziDevs, that is licensed under the MIT license.
+> Most of the code was fed to Gemini 3.5 Flash (Medium), and is a fork of [PteroStats](https://github.com/HirziDevs/PteroStats) by HirziDevs, that is licensed under the MIT license. With this note, I cannot guarantee the reliability of this code.
 
 CalagopusStats is a Discord Bot designed to check Calagopus Panel stats and post them to your Discord server.
 
