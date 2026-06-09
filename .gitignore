@@ -3,6 +3,7 @@ package-lock.json
 /.vscode
 /node_modules
 cache.json
+maintenance.json
 .env
 .setup-complete
 logs.txt

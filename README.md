@@ -1,47 +1,31 @@
-<div align="center">
+# CalagopusStats
 
-# PteroStats
+> [!CAUTION]
+> Most of the code was fed to Gemini 3.5 Flash (Medium), and is a fork of [PteroStats](https://github.com/HirziDevs/PteroStats) by HirziDevs, that is licensed under the MIT license.
 
-<img alt="PteroStats Banner" src="https://usercontent.catto.pictures/hirzi/c6880886-21e2-43da-b218-0ac4c229b001.png" width="400"/>
+CalagopusStats is a Discord Bot designed to check Calagopus Panel stats and post them to your Discord server.
 
-</div>
-
-## Introduction
-
-PteroStats is a Discord App/Bot designed to check Pterodactyl or Pelican Panel stats and post it to your Discord server.
-
-<img alt="PteroStats Image Preview" src="https://usercontent.catto.pictures/hirzi/e6f6fe6a-8c0e-4c7a-8b73-d4af752324f4.png" width="300"/>
+---
 
 ## Installation
 
-> Node.js 18 or newer is required.
+- [Using egg (Recommended)](guide/installation/egg.md)
+- [Manual](guide/installation/manual.md)
+- [Using docker](guide/installation/docker.md)
 
-1. [Create your Discord App/Bot](https://discordjs.guide/preparations/setting-up-a-bot-application).
-2. [Invite your Discord App/Bot to your Discord server](https://discordjs.guide/preparations/adding-your-bot-to-servers.html).
-3. Choose installation method.
-    - [Using egg (Recomended)](https://github.com/HirziDevs/PteroStats/blob/main/guide/installation/egg.md)
-    - [Manual](https://github.com/HirziDevs/PteroStats/blob/main/guide/installation/manual.md)
-    - [Using docker](https://github.com/HirziDevs/PteroStats/blob/main/guide/installation/docker.md)
+## Guides
 
-## Guide
-- [Changing Env Configuration](https://github.com/HirziDevs/PteroStats/blob/main/guide/changing-env-configuration.md)
-- [How to get Panel API key](https://github.com/HirziDevs/PteroStats/blob/main/guide/panel-api-key.md)
-- [How to get Channel ID](https://github.com/HirziDevs/PteroStats/blob/main/guide/channel-id.md)
-- [How to use Custom Emoji](https://github.com/HirziDevs/PteroStats/blob/main/guide/custom-emoji.md)
-- [Blacklist Nodes](https://github.com/HirziDevs/PteroStats/blob/main/guide/blacklist-nodes.md)
-- [Notifier (Discord Webhook)](https://github.com/HirziDevs/PteroStats/blob/main/guide/notifier.md)
+- [Changing Env Configuration](guide/changing-env-configuration.md)
+- [How to get Panel API key](guide/panel-api-key.md)
+- [How to get Channel ID](guide/channel-id.md)
+- [How to use Custom Emoji](guide/custom-emoji.md)
+- [Blacklist Nodes](guide/blacklist-nodes.md)
+- [Notifier (Discord Webhook)](guide/notifier.md)
 
-## Reporting a Bug
-Enable `log_error` in the `config.yml` file and check the console for the error message. Please also send the `logs.txt` file created by the bot, which contains information that will help with the bug report. After that, report it to our Discord server at [Support Server](https://discord.znproject.my.id).
+## Troubleshooting
 
-## Links
+Enable `log_error` in the `config.yml` file and check the console for the error message.
 
-### Support Server
+## Contributing
 
-- [Discord](https://discord.znproject.my.id)
-
-### Pterodactyl & Pelican Panel server
-
-Please do not ask about PteroStats here.
-- [Pterodactyl Discord Server](https://discord.gg/pterodactyl)
-- [Pelican Discord Server](https://discord.gg/pelican-panel)
+Issues and pull requests are welcome!

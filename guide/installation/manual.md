@@ -2,9 +2,9 @@
 
 1. Download this repository:
 
-    - Manually: [Download this repository](https://github.com/HirziDevs/PteroStats/archive/refs/heads/main.zip) and extract it.
+    - Manually: [Download this repository](https://github.com/heyitslumi/CalagopusStats/archive/refs/heads/main.zip) and extract it.
 
-    - Using GIT: Run `git clone https://github.com/HirziDevs/PteroStats.git` in the command line.
+    - Using GIT: Run `git clone https://github.com/heyitslumi/CalagopusStats.git` in the command line.
 
 2. Install required dependencies and start the app/bot.
 
@@ -14,7 +14,7 @@
 
         2. Install PM2 using `npm install -g pm2` command.
 
-        2. Run `pm2 start index.js -n PteroStats` to start the app/bot.
+        2. Run `pm2 start index.js -n CalagopusStats` to start the app/bot.
 
     - Using [nodejs-generic](https://github.com/pelican-eggs/generic/tree/main/nodejs) egg
 
@@ -24,11 +24,11 @@
 
     <img alt="Setup" src="https://usercontent.catto.pictures/hirzi/b8645828-591d-4d52-b6d8-51f8df60440c.png" width="300"/>
 
-    - [How to get Panel API key](https://github.com/HirziDevs/PteroStats/blob/main/guide/panel-api-key.md)
-    - [How to get Channel ID](https://github.com/HirziDevs/PteroStats/blob/main/guide/channel-id.md)
+    - [How to get Panel API key](https://github.com/heyitslumi/CalagopusStats/blob/main/guide/panel-api-key.md)
+    - [How to get Channel ID](https://github.com/heyitslumi/CalagopusStats/blob/main/guide/channel-id.md)
 
 ## Links
 
 ### Support Server
 
-- [Discord](https://discord.znproject.my.id)
+- [Discord](https://github.com/heyitslumi/CalagopusStats)

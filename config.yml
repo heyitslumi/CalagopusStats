@@ -1,61 +1,56 @@
-# PteroStats Configuration File
-# Need help? Join our Discord server: https://discord.znproject.my.id
+# CalagopusStats Configuration File
+# Need help? Join our Discord server: https://github.com/heyitslumi/CalagopusStats
 version: 9 # Warning: Do not change this unless you know what you are doing!
 
 # App/Bot Presence Configuration
 presence:
   enable: true # Enable or disable app presence (true/false).
-  text: "Hosting Panel" # The status text shown by the app.
+  text: "Calagopus" # The status text shown by the app.
   type: "watching" # Available types: 'watching', 'playing', 'listening', 'competing'. (Note: 'streaming' is currently unsupported)
   status: "online" # Available types: 'online', 'idle', 'dnd', or 'invisible'
 
 # Discord Channel and Refresh Timing Configuration
-refresh: 10 # Interval in seconds for refreshing the panel's stats.
+refresh: 30 # Interval in seconds for refreshing the panel's stats. Warning: Setting this too low (e.g., 10s) can trigger panel API rate limits (HTTP 429).
 timeout: 5 # Timeout in seconds for panel and node responses. Adjusting this will affect the overall refresh time.
 
-# Message and Embed Configuration
-# To disable an option, leave the value as an empty string: ''
+# Message and Layout Configuration (Discord Message Components V2 Mode)
+# To disable any of these options, leave the value as an empty string: ''
+# Note: You can write multiline text using YAML block style. E.g.:
+# message:
+#   content: |
+#     # Welcome to the Server Status Channel
+#     * We are currently monitoring all nodes.
+#     * Type /stats for more information.
 message:
-  content: "" # Custom content for app messages.
-  attachment: "" # Attachments will delay stats refresh since they are uploaded first.
+  content: "" # Custom text content. Prepend at the very top of the status card. Supports markdown, role pings, and multiline text.
 
 embed:
   panel:
-    author:
-      name: "Hosting Panel" # Author name for the panel embed.
-      icon: "" # Icon URL for the author of the panel embed.
-    title: "Panel Stats" # Title of the panel stats embed.
-    description: "Next update {{time}}" # Description for the panel. {{time}} will display the next refresh time.
-    timestamp: false # Show the timestamp in the embed (true/false).
-    color: "5865F2" # Embed color in hex format.
-    footer:
-      text: "" # Footer text. Set to '' to disable.
-      icon: "" # Footer icon URL.
-    thumbnail: "" # Thumbnail URL for the embed.
-    image: "" # Image URL for the embed.
+    title: "Panel Stats" # Title header of the Panel Container card.
+    description: "Next update {{time}}" # Description line of the Panel card. {{time}} displays relative refresh time.
+    color: "5865F2" # Side accent border color of the Panel card (Hex format).
+    thumbnail: "" # Thumbnail image URL displayed as a right-side accessory of the Panel card header.
 
   nodes:
-    author:
-      name: "" # Author name for the nodes embed.
-      icon: "" # Icon URL for the author of the nodes embed.
-    title: "Nodes Stats" # Title for the nodes stats embed.
-    description: "" # Description for the nodes stats embed. Can be left empty.
-    timestamp: true # Include a timestamp in the nodes embed (true/false).
-    color: "5865F2" # Embed color in hex format.
+    title: "Nodes Stats" # Title header of the Nodes Container card.
+    description: "" # Description line of the Nodes card. Can be left empty.
+    timestamp: true # Include a relative update timestamp at the bottom of the nodes footer card (true/false).
+    color: "5865F2" # Side accent border color of the Nodes card (Hex format).
     footer:
-      text: "By @HirziDevs" # Footer text for nodes stats.
-      icon: "" # Footer icon URL.
-    thumbnail: "" # Thumbnail URL for the nodes stats embed.
-    image: "" # Image URL for the nodes stats embed.
+      text: "CalagopusStats" # Footer text at the bottom of the nodes card.
+    thumbnail: "" # Thumbnail image URL displayed as a right-side accessory of the Nodes card header.
 
 # Message Button Configuration
+# Note: You can add an optional "emoji" property to buttons (supports Unicode like "🌐" or custom emojis like "<:custom:1234567890>")
 button:
   enable: true # Enable or disable buttons in messages.
   row1:
     - label: "Panel" # Label for the first button.
       url: "https://panel.example.com" # URL for the first button.
+      emoji: "🌐" # Optional emoji for the button (Unicode or custom).
 #    - label: "Dashboard" # Remove "#" at the start of the line to use this button
 #      url: "https://dash.example.com" # Remove "#" at the start of the line to use this button
+#      emoji: "📊"
 #  row2: # Remove "#" at the start of the line to use this row
 #    - label: "Backup Panel"
 #      url: "https://panel2.example.com"
@@ -63,47 +58,57 @@ button:
 #      url: "https://dash2.example.com"
 
 # Status Message Configuration
-# How to use Custom Emoji: https://github.com/HirziDevs/PteroStats/blob/main/guide/custom-emoji.md
+# How to use Custom Emoji: https://github.com/heyitslumi/CalagopusStats/blob/main/guide/custom-emoji.md
 status:
   online: ":green_circle: Online" # Status message for when a node is online.
   offline: ":red_circle: Offline" # Status message for when a node is offline.
+  maintenance: "🛠️ Maintenance" # Status message for when a node is in maintenance.
 
 # Node Settings
-# How to get Node ID: https://github.com/HirziDevs/PteroStats/blob/main/guide/blacklist-nodes.md
+# How to get Node ID: https://github.com/heyitslumi/CalagopusStats/blob/main/guide/blacklist-nodes.md
 nodes_settings:
-  blacklist: [] # Add node IDs to exclude them from the status embed (e.g., blacklist: [1]).
+  blacklist: [] # Add node UUIDs to exclude them from the status embed (e.g., blacklist: ["123e4567-e89b-12d3-a456-426614174000"]).
   details: true # Show node details such as memory and disk usage (true/false).
-  servers: false # Show server details (true/false).
-  allocations_as_max_servers: false # Show allocations as max servers (true/false).
-  host: false # Show node host (true/false).
+  servers: true # Show server details (true/false).
+  allocations_as_max_servers: true # Show allocations as max servers (true/false).
+  host: true # Show node host (true/false).
   unit: "byte" # Resource Unit, Available types: "byte" or "percentage".
   uptime: true # Show node uptime (true/false).
   limit: 100 # Change how much node can will be displayed.
+  live_cpu: true # Show actual live CPU utilization from stats API instead of server limit allocations (true/false)
+  live_resources: true # Show actual live memory and disk utilization from stats API instead of server limit allocations (true/false)
 
 # Panel Users and Servers Settings
 panel_settings:
   status: true # Display panel stats above node stats (true/false).
-  host: false # Show panel host (true/false).
+  host: true # Show panel host (true/false).
   uptime: true # Enable or disable node uptime (true/false).
   servers: true # Display servers count (true/false).
   users: true # Display users count (true/false).
+  hardware_details: true # Display panel CPU, RAM, and Database size (true/false)
 
 # Notifier Configuration
-# How to use notifier: https://github.com/HirziDevs/PteroStats/blob/main/guide/notifier.md
+# How to use notifier: https://github.com/heyitslumi/CalagopusStats/blob/main/guide/notifier.md
 notifier:
-  enable: false # Enable or disable notifier.
+  enable: true # Enable or disable notifier.
   webhook: "" # Discord Webhook URL for the notifier.
+  username: "CalagopusStats Notifier" # Override the webhook sender's display name. Leave empty to use Discord's default name.
+  avatar_url: "" # Override the webhook sender's profile picture URL. Leave empty to use Discord's default avatar.
   embed:
-    author:
-      name: "" # Author name for the notifier embed.
-      icon: "" # Icon URL for the author of the notifier embed.
-    timestamp: true # Include a timestamp in the notifier embed (true/false).
+    timestamp: true # Include a relative timestamp in the notifier card (true/false).
     footer:
-      text: "PteroStats Notifier" # Footer text for notifier stats.
-      icon: "" # Footer icon URL.
-    thumbnail: "" # Thumbnail URL for the notifier stats embed.
-    image: "" # Image URL for the notifier stats embed.
+      text: "CalagopusStats Notifier" # Footer text for notifier stats.
+    thumbnail: "" # Thumbnail URL displayed as a right-side accessory of the notifier card header.
+
+# Detailed Node Metrics Configuration (Interactive Dropdown & Ephemeral Info Card)
+detailed_metrics:
+  enable: true                 # Enable or disable the interactive node selection dropdown menu (true/false).
+  placeholder: "Select a node for detailed stats..." # Custom placeholder text for the dropdown.
+  show_fqdn: true              # Show node FQDN/hostname in dropdown descriptions and the details card (true/false).
+  show_uptime: true            # Show node uptime in the details card (true/false).
+  show_allocations: true       # Show allocated RAM, Disk, and servers count (true/false).
+  show_live_daemon: true       # Show live system/wings daemon stats (wings version, OS kernel, CPU, wings process RAM, host RAM, server statuses) (true/false).
 
 # Error Logging Configuration
 # Enable logging to console if servers go offline, useful for debugging.
-log_error: false # Set to true to enable error logging (true/false).
+log_error: true # Set to true to enable error logging (true/false).

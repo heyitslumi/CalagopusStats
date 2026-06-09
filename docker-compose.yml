@@ -1,8 +1,8 @@
 version: '3.3'
 services:
-  pterostats:
-    container_name: pterostats
-    image: ghcr.io/hirzidevs/pterostats:latest
+  calagopusstats:
+    container_name: calagopusstats
+    image: ghcr.io/heyitslumi/calagopusstats:latest
     restart: always
     volumes:
       - ./config.yml:/app/config.yml

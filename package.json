@@ -1,16 +1,15 @@
 {
-    "name": "pterostats",
+    "name": "calagopusstats",
     "version": "4.1.0",
-    "description": "PteroStats is a Discord App/Bot designed to check Pterodactyl or Pelican Panel stats and post it to your Discord server.",
+    "description": "CalagopusStats is a Discord Bot designed to check Calagopus Panel stats and post it to your Discord server.",
     "license": "MIT",
-    "homepage": "https://pterostats.znproject.my.id",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/HirziDevs/PteroStats.git"
+        "url": "git+https://github.com/heyitslumi/CalagopusStats.git"
     },
     "bugs": {
-        "email": "hirzi@znproject.my.id",
-        "url": "https://github.com/HirziDevs/PteroStats/issues"
+        "email": "hi@lumis.moe",
+        "url": "https://github.com/heyitslumi/CalagopusStats/issues"
     },
     "scripts": {
         "start": "node index.js"

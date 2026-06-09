@@ -1,14 +1,16 @@
 const cliColor = require("cli-color");
+const config = require("./configuration.js");
+const axios = require("axios");
 
 module.exports = async function getUsers() {
-    console.log(cliColor.cyanBright("[PteroStats] ") + cliColor.yellow("Retrieving panel users..."))
-    return fetch(`${new URL(process.env?.PanelURL).origin}/api/application/users`, {
+    console.log(cliColor.cyanBright("[CalagopusStats] ") + cliColor.yellow("Retrieving panel users..."));
+    return axios(`${new URL(process.env?.PanelURL).origin}/api/admin/users?page=1&per_page=1`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${process.env?.PanelKEY}`
         },
+        timeout: config.timeout * 1000
     })
-        .then((res) => res.json())
-        .then((data) => data.meta.pagination.total)
+        .then((res) => res.data.users ? res.data.users.total : 0);
 }

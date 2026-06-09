@@ -16,7 +16,7 @@ curl -fsSL https://get.docker.com | sh
 
 ```bash
 docker compose up -d
-docker compose logs -f pterostats
+docker compose logs -f calagopusstats
 ```
 
 ### Docker Run
@@ -25,6 +25,6 @@ docker compose logs -f pterostats
 - Copy the `config.yml` file at the same directory where you run the command and configure it
 
 ```bash
-docker run -d --name pterostats -e PanelURL=<PanelURL> -e PanelKEY=<PanelKEY> -e DiscordBotToken=<DISCORD_BOT_TOKEN> -e DiscordChannel=<DISCORD_CHANNEL_ID> -v $(pwd)/config.yml:/app/config.yml ghcr.io/hirzidevs/pterostats:latest
-docker logs -f pterostats
+docker run -d --name calagopusstats -e PanelURL=<PanelURL> -e PanelKEY=<PanelKEY> -e DiscordBotToken=<DISCORD_BOT_TOKEN> -e DiscordChannel=<DISCORD_CHANNEL_ID> -v $(pwd)/config.yml:/app/config.yml ghcr.io/heyitslumi/calagopusstats:latest
+docker logs -f calagopusstats
 ```
