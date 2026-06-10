@@ -1,5 +1,7 @@
 # CalagopusStats
 
+> Most of the code was fed to Gemini 3.5 Flash (Medium), and is a fork of [PteroStats](https://github.com/HirziDevs/PteroStats) by HirziDevs, that is licensed under the MIT license. With this note, I cannot guarantee the reliability of this code.
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/heyitslumi/CalagopusStats/main/guide/logo.png" alt="CalagopusStats Logo" width="200" style="border-radius: 12px;"/>
 </p>
