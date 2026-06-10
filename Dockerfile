@@ -10,4 +10,6 @@ RUN if [ -f package-lock.json ]; then npm ci --only=production; else npm install
 
 COPY . .
 
+HEALTHCHECK --interval=1m --timeout=10s --retries=3 CMD node healthcheck.js
+
 CMD ["node", "index.js"]

@@ -24,6 +24,10 @@ if (config.version !== 1) {
     process.exit();
 }
 
+if (config.timezone) {
+    process.env.TZ = config.timezone;
+}
+
 logger.success("Configuration loaded");
 
 module.exports = config;

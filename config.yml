@@ -2,6 +2,9 @@
 # Need help? Email me: hi@lumis.moe
 version: 1 # Warning: Do not change this unless you know what you are doing!
 
+# Timezone Configuration
+timezone: "Europe/Paris" # The timezone for bot logs and console timestamps (e.g., "Europe/Paris", "America/New_York", "UTC").
+
 # App/Bot Presence Configuration
 presence:
   enable: true # Enable or disable app presence (true/false).

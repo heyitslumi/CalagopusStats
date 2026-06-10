@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { Client, GatewayIntentBits, ActivityType, REST, Routes, SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require("discord.js");
+const { Client, GatewayIntentBits, ActivityType, REST, Routes, SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const config = require("./configuration.js");
 const cliColor = require("cli-color");
 const logger = require("./logger.js");
@@ -114,6 +114,9 @@ module.exports = function Application() {
             try {
                 const rest = new REST({ version: '10' }).setToken(process.env.DiscordBotToken);
                 const rawCommands = [
+                    new SlashCommandBuilder()
+                        .setName('help')
+                        .setDescription('Displays information about all commands and guide links.'),
                     new SlashCommandBuilder()
                         .setName('ping')
                         .setDescription('Checks the bot latency.')
@@ -659,6 +662,58 @@ module.exports = function Application() {
 
         // 2. Handle Slash Command Interactions
         if (interaction.isChatInputCommand()) {
+            if (interaction.commandName === 'help') {
+                const embedColor = config.embed?.panel?.color ? (config.embed.panel.color.startsWith("#") ? config.embed.panel.color : `#${config.embed.panel.color}`) : "#5865F2";
+                
+                const helpEmbed = new EmbedBuilder()
+                    .setTitle("CalagopusStats Help Menu")
+                    .setDescription("CalagopusStats is a premium Discord bot that monitors your Calagopus/Pterodactyl nodes and servers, displaying real-time stats and metrics directly in your server.")
+                    .setColor(embedColor)
+                    .setThumbnail(client.user.displayAvatarURL())
+                    .addFields(
+                        {
+                            name: "📊 General Commands",
+                            value: 
+                                "`/stats` - Display panel statistics and list of online/offline nodes.\n" +
+                                "`/node <name>` - View detailed resource usage, CPU/RAM allocations, and Wings status for a specific node.\n" +
+                                "`/history` - View a 24-hour visual trend chart showing Panel growth and RAM allocations.\n" +
+                                "`/ping` - Verify the bot latency and API connection speeds."
+                        },
+                        {
+                            name: "⚙️ Admin Commands",
+                            value:
+                                "`/refresh` - Force an immediate refresh of the main status message card.\n" +
+                                "`/maintenance <node> <on/off>` - Toggle maintenance mode on a node to silence alert notifications.\n" +
+                                "`/blacklist <add/remove> <node>` - Exclude or restore a node from the main status embeds.\n" +
+                                "`/alert-test` - Dispatches mock node online/offline cards to test notification webhooks.\n" +
+                                "`/panel-sysinfo` - View specifications, hardware details, OS info, and database sizes of the Panel host."
+                        }
+                    )
+                    .setFooter({ text: "CalagopusStats Help Dashboard", iconURL: client.user.displayAvatarURL() })
+                    .setTimestamp();
+
+                const buttons = new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setLabel("GitHub Code")
+                            .setStyle(ButtonStyle.Link)
+                            .setURL("https://github.com/heyitslumi/CalagopusStats")
+                            .setEmoji("💻"),
+                        new ButtonBuilder()
+                            .setLabel("Documentation")
+                            .setStyle(ButtonStyle.Link)
+                            .setURL("https://github.com/heyitslumi/CalagopusStats#readme")
+                            .setEmoji("📖"),
+                        new ButtonBuilder()
+                            .setLabel("Report Issues")
+                            .setStyle(ButtonStyle.Link)
+                            .setURL("https://github.com/heyitslumi/CalagopusStats/issues")
+                            .setEmoji("🐛")
+                    );
+
+                return interaction.reply({ embeds: [helpEmbed], components: [buttons], ephemeral: true });
+            }
+
             if (interaction.commandName === 'ping') {
                 const sent = await interaction.reply({ content: 'Pinging...', fetchReply: true, ephemeral: true });
                 const latency = sent.createdTimestamp - interaction.createdTimestamp;

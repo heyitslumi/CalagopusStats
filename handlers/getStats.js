@@ -15,6 +15,11 @@ const fs = require("node:fs");
 const logger = require("./logger.js");
 
 module.exports = async function getStats(client) {
+    // Update heartbeat file for Docker health check
+    try {
+        fs.writeFileSync(path.join(__dirname, "../health.json"), JSON.stringify({ last_heartbeat: Date.now() }), "utf8");
+    } catch (err) {}
+
     try {
         let cache = (() => {
             try {

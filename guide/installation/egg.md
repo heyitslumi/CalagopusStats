@@ -1,44 +1,46 @@
-## Using CalagopusStats Egg
+## Pterodactyl / Pelican Egg Installation Guide
 
-1. Download and import [`calagopusstats-egg.json`](https://raw.githubusercontent.com/heyitslumi/calagopusstats/main/calagopusstats-egg.json) egg to your panel.
+Installing **CalagopusStats** via Pterodactyl or Pelican panel is the recommended method for game hosting platforms.
 
-    - Pterodactyl Panel
+---
 
-        <img alt="Add calagopusstats egg to pterodactyl panel" src="https://usercontent.catto.pictures/hirzi/78c212c1-cb2d-4dcb-b987-5a817e33fc05.png" width="300"/>
+### 🥚 1. Import the Egg
 
-    - Pelican Panel (From File)
+1. Download the custom egg template: [`calagopusstats-egg.json`](https://raw.githubusercontent.com/heyitslumi/CalagopusStats/main/calagopusstats-egg.json)
+2. Import the JSON egg file into your Pterodactyl or Pelican Panel:
+   - **Pterodactyl:** Panel Admin -> Nests -> Import Egg
+   - **Pelican:** Admin Portal -> Eggs -> Import / Add
 
-        <img alt="Add calagopusstats egg to pelican panel (From File)" src="https://usercontent.catto.pictures/hirzi/7feb28b3-5111-4a5b-83aa-37da29c58d4d.png" width="300"/>
+---
 
-    - Pelican Panel (From URL)
+### 🥚 2. Create the Server
 
-        <img alt="Add calagopusstats egg to pelican panel (From URL)" src="https://usercontent.catto.pictures/hirzi/ffcb138f-b489-43b1-a81d-aca0b26394e5.png" width="300"/>
+1. Create a new server in your panel admin interface.
+2. Select **CalagopusStats** under your eggs category.
+3. Configure the **Startup / Environment Variables** directly in the panel during creation (or under the server's **Startup** tab later):
+   - `PanelURL` (e.g. `https://panel.example.com`)
+   - `PanelKEY` (Pterodactyl Application API Key)
+   - `DiscordBotToken` (Discord Developer Bot Token)
+   - `DiscordChannel` (Discord text channel ID for status updates)
 
-2. Create a server and use the egg.
+*Note: If these 4 variables are defined in the panel, the bot will auto-bypass the setup wizard and boot up instantly!*
 
-    - Pterodactyl Panel
+---
 
-        <img alt="Create a server and use the calagopusstats egg in pterodactyl panel" src="https://usercontent.catto.pictures/hirzi/5d2f87ac-6e77-4362-8b7c-8a9955f94fa3.png" width="300"/>
+### 🥚 3. Alternative: Console Interactive Setup
 
-    - Pelican Panel
+If you prefer to configure the bot via the console instead of panel environment variables:
 
-        <img alt="Create a server and use the calagopusstats egg in pelican panel" src="https://usercontent.catto.pictures/hirzi/1ca15f64-53b7-4343-97a4-f1808f1fecae.png" width="300"/>
+1. Leave the startup/environment variables blank in the panel settings.
+2. Complete server installation and click **Start**.
+3. Open the server console.
+4. The interactive `@clack/prompts` wizard will boot and prompt you for the credentials. Use the console text input to answer each step:
+   - Use the arrow keys (if TTY is supported) or console answers to confirm.
+   - Enter your credentials (keys and tokens are masked).
+   - Once confirmed, the configurations will write to `.env` and `config.yml` automatically, and the bot will start running.
 
-3. Finish the server creation process and wait until server installation is completed.
+---
 
-4. Start the server.
-
-    <img alt="Start the server" src="https://usercontent.catto.pictures/hirzi/0918ecf9-bae3-401e-9810-05839c401405.png" width="300"/>
-
-5. Answer the prompted questions in the console to set up the  app/bot.
-
-    <img alt="Setup" src="https://usercontent.catto.pictures/hirzi/b8645828-591d-4d52-b6d8-51f8df60440c.png" width="300"/>
-
-    - [How to get Panel API key](https://github.com/heyitslumi/CalagopusStats/blob/main/guide/panel-api-key.md)
-    - [How to get Channel ID](https://github.com/heyitslumi/CalagopusStats/blob/main/guide/channel-id.md)
-
-## Links
-
-### Support Server
-
-- [Discord](https://github.com/heyitslumi/CalagopusStats)
+### 📖 Related Guides
+- [How to get Panel API key](../panel-api-key.md)
+- [How to get Channel ID](../channel-id.md)

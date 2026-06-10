@@ -10,3 +10,9 @@ services:
       - PanelKEY=<PANEL_KEY>
       - DiscordBotToken=<DISCORD_BOT_TOKEN>
       - DiscordChannel=<DISCORD_CHANNEL_ID>
+    healthcheck:
+      test: ["CMD", "node", "healthcheck.js"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
