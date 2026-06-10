@@ -5,9 +5,16 @@ version: 9 # Warning: Do not change this unless you know what you are doing!
 # App/Bot Presence Configuration
 presence:
   enable: true # Enable or disable app presence (true/false).
-  text: "Calagopus" # The status text shown by the app.
+  text: "Calagopus" # The default status text shown by the app if rotation is disabled.
   type: "watching" # Available types: 'watching', 'playing', 'listening', 'competing'. (Note: 'streaming' is currently unsupported)
   status: "online" # Available types: 'online', 'idle', 'dnd', or 'invisible'
+  rotate: true # Enable rotating status (true/false).
+  rotate_interval: 15 # Interval in seconds for status rotation.
+  templates: # List of status messages to rotate. Placeholders: {{servers}}, {{users}}, {{nodes_online}}, {{nodes_total}}, {{uptime}}
+    - "Watching {{servers}} active servers"
+    - "Monitoring {{nodes_online}}/{{nodes_total}} nodes"
+    - "Serving {{users}} registered users"
+    - "Panel Uptime: {{uptime}}"
 
 # Discord Channel and Refresh Timing Configuration
 refresh: 30 # Interval in seconds for refreshing the panel's stats. Warning: Setting this too low (e.g., 10s) can trigger panel API rate limits (HTTP 429).
@@ -77,6 +84,7 @@ nodes_settings:
   limit: 100 # Change how much node can will be displayed.
   live_cpu: true # Show actual live CPU utilization from stats API instead of server limit allocations (true/false)
   live_resources: true # Show actual live memory and disk utilization from stats API instead of server limit allocations (true/false)
+  chart: true # Show visual resource overview chart in the status container (true/false)
 
 # Panel Users and Servers Settings
 panel_settings:
@@ -108,7 +116,14 @@ detailed_metrics:
   show_uptime: true            # Show node uptime in the details card (true/false).
   show_allocations: true       # Show allocated RAM, Disk, and servers count (true/false).
   show_live_daemon: true       # Show live system/wings daemon stats (wings version, OS kernel, CPU, wings process RAM, host RAM, server statuses) (true/false).
+  chart: true                  # Show resource allocation overview chart in the detailed stats card (true/false).
+
+# Historical Trends Configuration
+history_settings:
+  enable: true                 # Log historical stats and enable the /history slash command (true/false)
+  interval: 60                 # History recording interval in minutes (default 60 = 1 hour)
+  limit: 24                    # Number of historical data points to keep in the rolling window (default 24)
 
 # Error Logging Configuration
 # Enable logging to console if servers go offline, useful for debugging.
-log_error: true # Set to true to enable error logging (true/false).
+log_error: false # Set to true to enable error logging (true/false).

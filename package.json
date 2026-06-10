@@ -1,6 +1,6 @@
 {
     "name": "calagopusstats",
-    "version": "4.1.0",
+    "version": "1.0.0",
     "description": "CalagopusStats is a Discord Bot designed to check Calagopus Panel stats and post it to your Discord server.",
     "license": "MIT",
     "repository": {

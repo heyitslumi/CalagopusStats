@@ -1,3 +1,9 @@
-config.yml
 node_modules
-package-lock.json
+.git
+.vscode
+.env
+cache.json
+maintenance.json
+logs.txt
+logs/
+history.json

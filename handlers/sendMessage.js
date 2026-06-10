@@ -208,6 +208,87 @@ module.exports = async function sendMessage({ client, cache, panel, uptime, node
         };
         finalComponents.push(nodesContainer);
     }
+    // 2.5 Render Chart Container
+    if (config.nodes_settings.chart && nodes && nodes.length > 0) {
+        const labels = nodes.map(n => n.attributes.name);
+        const allocatedData = nodes.map(n => Math.round(n.attributes.allocated_resources.memory / 102.4) / 10);
+        const totalData = nodes.map(n => Math.round(n.attributes.memory / 102.4) / 10);
+
+        const chartConfig = {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Allocated (GB)',
+                        data: allocatedData,
+                        backgroundColor: '#5865F2'
+                    },
+                    {
+                        label: 'Total (GB)',
+                        data: totalData,
+                        backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                    }
+                ]
+            },
+            options: {
+                legend: {
+                    labels: {
+                        fontColor: '#dbdee1',
+                        fontSize: 12
+                    }
+                },
+                title: {
+                    display: true,
+                    text: 'Node Memory Allocation Overview',
+                    fontColor: '#f2f3f5',
+                    fontSize: 14
+                },
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            fontColor: '#949ba4',
+                            beginAtZero: true,
+                            fontSize: 10
+                        },
+                        gridLines: {
+                            color: '#3f4248'
+                        }
+                    }],
+                    xAxes: [{
+                        ticks: {
+                            fontColor: '#949ba4',
+                            fontSize: 10
+                        },
+                        gridLines: {
+                            color: '#3f4248'
+                        }
+                    }]
+                }
+            }
+        };
+
+        const chartUrl = `https://quickchart.io/chart?bkg=%232b2d31&w=600&h=300&c=${encodeURIComponent(JSON.stringify(chartConfig))}`;
+
+        const chartContainer = {
+            type: 17, // Container
+            accent_color: colorToInt(config.embed.nodes.color),
+            components: [
+                {
+                    type: 12, // MediaGallery
+                    items: [
+                        {
+                            media: {
+                                url: chartUrl
+                            },
+                            description: "Memory Allocation Chart"
+                        }
+                    ]
+                }
+            ]
+        };
+        finalComponents.push(chartContainer);
+    }
 
     // 3. Render Footer & Timestamp
     let footerText = "";

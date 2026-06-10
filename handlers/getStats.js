@@ -234,6 +234,54 @@ module.exports = async function getStats(client) {
 
         fs.writeFileSync("cache.json", JSON.stringify(data, null, 2), "utf8");
 
+        client.panelStats = {
+            servers: data.servers || 0,
+            users: data.users || 0,
+            nodesTotal: data.nodes.length,
+            nodesOnline: data.nodes.filter(n => n.status).length,
+            uptime: data.uptime
+        };
+
+        // History Tracking
+        const historyEnabled = config.history_settings?.enable !== false;
+        if (historyEnabled) {
+            try {
+                let history = [];
+                const historyPath = path.join(__dirname, "../history.json");
+                if (fs.existsSync(historyPath)) {
+                    history = JSON.parse(fs.readFileSync(historyPath, "utf8"));
+                }
+                
+                const lastPoint = history[history.length - 1];
+                const intervalMs = (config.history_settings?.interval || 60) * 60000;
+                const limit = config.history_settings?.limit || 24;
+
+                if (!lastPoint || (Date.now() - lastPoint.timestamp >= intervalMs)) {
+                    let totalAllocatedMemory = 0;
+                    let totalMemory = 0;
+                    for (const node of data.nodes) {
+                        if (node.status) {
+                            totalAllocatedMemory += node.attributes.allocated_resources.memory || 0;
+                            totalMemory += node.attributes.memory || 0;
+                        }
+                    }
+
+                    history.push({
+                        timestamp: Date.now(),
+                        servers: data.servers || 0,
+                        users: data.users || 0,
+                        memoryAllocated: totalAllocatedMemory,
+                        memoryTotal: totalMemory
+                    });
+
+                    while (history.length > limit) history.shift();
+                    fs.writeFileSync(historyPath, JSON.stringify(history, null, 2), "utf8");
+                }
+            } catch (err) {
+                if (config.log_error) console.error("Failed to update history log:", err);
+            }
+        }
+
         if (data.isPanelDown) webhook(
             new EmbedBuilder()
                 .setTitle("Panel Online")
@@ -276,6 +324,14 @@ module.exports = async function getStats(client) {
                 }
                 
                 fs.writeFileSync("cache.json", JSON.stringify(results, null, 2), "utf8");
+
+                client.panelStats = {
+                    servers: results.servers || 0,
+                    users: results.users || 0,
+                    nodesTotal: results.nodes?.length || 0,
+                    nodesOnline: results.nodes?.filter(n => n.status).length || 0,
+                    uptime: results.uptime
+                };
 
                 results.client = client
                 results.panel = false

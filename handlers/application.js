@@ -54,33 +54,57 @@ module.exports = function Application() {
         console.log(cliColor.cyanBright("[CalagopusStats] ") + cliColor.green(`${cliColor.blueBright(client.user.tag)} is online!`));
 
         if (config.presence.enable) {
-            if (config.presence.text && config.presence.type) {
+            let activityType = ActivityType.Watching;
+            if (config.presence.type) {
                 switch (config.presence.type.toLowerCase()) {
                     case "playing":
-                        config.presence.type = ActivityType.Playing;
+                        activityType = ActivityType.Playing;
                         break;
                     case "listening":
-                        config.presence.type = ActivityType.Listening;
+                        activityType = ActivityType.Listening;
                         break;
                     case "competing":
-                        config.presence.type = ActivityType.Competing;
+                        activityType = ActivityType.Competing;
                         break;
-                    default:
-                        config.presence.type = ActivityType.Watching;
                 }
+            }
 
+            if (config.presence.rotate && config.presence.templates && config.presence.templates.length > 0) {
+                let currentIndex = 0;
+                const uptimeFormatter = require("./uptimeFormatter.js");
+
+                const updateRotation = () => {
+                    if (!client.panelStats) return;
+
+                    const templates = config.presence.templates;
+                    const template = templates[currentIndex];
+                    currentIndex = (currentIndex + 1) % templates.length;
+
+                    const uptimeStr = client.panelStats.uptime ? uptimeFormatter(Date.now() - client.panelStats.uptime) : "N/A";
+
+                    const text = template
+                        .replaceAll("{{servers}}", client.panelStats.servers)
+                        .replaceAll("{{users}}", client.panelStats.users)
+                        .replaceAll("{{nodes_online}}", client.panelStats.nodesOnline)
+                        .replaceAll("{{nodes_total}}", client.panelStats.nodesTotal)
+                        .replaceAll("{{uptime}}", uptimeStr);
+
+                    client.user.setActivity(text, { type: activityType });
+                };
+
+                setInterval(updateRotation, (config.presence.rotate_interval || 15) * 1000);
+            } else if (config.presence.text) {
                 client.user.setActivity(config.presence.text, {
-                    type: config.presence.type,
+                    type: activityType,
                 });
             }
 
             if (config.presence.status) {
-                if (!["idle", "online", "dnd", "invisible"].includes(
-                    config.presence.status.toLowerCase()
-                ))
-                    config.presence.status = "online";
-
-                client.user.setStatus(config.presence.status);
+                let statusVal = config.presence.status.toLowerCase();
+                if (!["idle", "online", "dnd", "invisible"].includes(statusVal)) {
+                    statusVal = "online";
+                }
+                client.user.setStatus(statusVal);
             }
         }
 
@@ -88,10 +112,21 @@ module.exports = function Application() {
         const registerCommands = async () => {
             try {
                 const rest = new REST({ version: '10' }).setToken(process.env.DiscordBotToken);
-                const commands = [
+                const rawCommands = [
                     new SlashCommandBuilder()
                         .setName('ping')
-                        .setDescription('Checks the bot latency.'),
+                        .setDescription('Checks the bot latency.')
+                ];
+
+                if (config.history_settings?.enable !== false) {
+                    rawCommands.push(
+                        new SlashCommandBuilder()
+                            .setName('history')
+                            .setDescription('Shows 24-hour panel growth and node memory allocation trends.')
+                    );
+                }
+
+                rawCommands.push(
                     new SlashCommandBuilder()
                         .setName('stats')
                         .setDescription('Replies with a quick panel and nodes status summary or detailed metrics for a specific node.')
@@ -168,7 +203,9 @@ module.exports = function Application() {
                                 .setDescription('List all currently blacklisted nodes')
                         )
                         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
-                ].map(command => command.toJSON());
+                );
+
+                const commands = rawCommands.map(command => command.toJSON());
 
                 console.log(cliColor.cyanBright("[CalagopusStats] ") + cliColor.yellow("Registering slash commands..."));
                 await rest.put(
@@ -300,6 +337,94 @@ module.exports = function Application() {
                     content: `⚠️ *Live metrics unavailable because the daemon is offline.*`
                 });
             }
+        }
+
+        // Block 4: Capacity Allocation Chart (ephemeral card)
+        const showChart = config.detailed_metrics?.chart !== false;
+        if (showChart) {
+            const labels = ['Memory', 'Disk'];
+            const allocatedData = [
+                Math.round(node.attributes.allocated_resources.memory / 102.4) / 10,
+                Math.round(node.attributes.allocated_resources.disk / 102.4) / 10
+            ];
+            const freeData = [
+                Math.max(0, Math.round((node.attributes.memory - node.attributes.allocated_resources.memory) / 102.4) / 10),
+                Math.max(0, Math.round((node.attributes.disk - node.attributes.allocated_resources.disk) / 102.4) / 10)
+            ];
+
+            const chartConfig = {
+                type: 'horizontalBar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Allocated (GB)',
+                            data: allocatedData,
+                            backgroundColor: '#5865F2'
+                        },
+                        {
+                            label: 'Free (GB)',
+                            data: freeData,
+                            backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                        }
+                    ]
+                },
+                options: {
+                    legend: {
+                        labels: {
+                            fontColor: '#dbdee1',
+                            fontSize: 10
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'Node Capacity Allocation (GB)',
+                        fontColor: '#f2f3f5',
+                        fontSize: 12
+                    },
+                    scales: {
+                        xAxes: [{
+                            stacked: true,
+                            ticks: {
+                                fontColor: '#949ba4',
+                                beginAtZero: true,
+                                fontSize: 9
+                            },
+                            gridLines: {
+                                color: '#3f4248'
+                            }
+                        }],
+                        yAxes: [{
+                            stacked: true,
+                            ticks: {
+                                fontColor: '#949ba4',
+                                fontSize: 9
+                            },
+                            gridLines: {
+                                color: '#3f4248'
+                            }
+                        }]
+                    }
+                }
+            };
+
+            const chartUrl = `https://quickchart.io/chart?bkg=%232b2d31&w=500&h=200&c=${encodeURIComponent(JSON.stringify(chartConfig))}`;
+
+            if (container.components.length > 1) {
+                container.components.push({ type: 14 }); // Separator
+            }
+
+            container.components.push({
+                type: 12, // MediaGallery
+                items: [
+                    {
+                        media: {
+                            url: chartUrl
+                        },
+                        description: "Capacity Allocation Chart"
+                    }
+                ]
+            });
         }
 
         if (container.components.length > 1) {
@@ -537,6 +662,117 @@ module.exports = function Application() {
                 const sent = await interaction.reply({ content: 'Pinging...', fetchReply: true, ephemeral: true });
                 const latency = sent.createdTimestamp - interaction.createdTimestamp;
                 return interaction.editReply(`🏓 **Pong!**\nGateway Latency: \`${client.ws.ping}ms\`\nAPI Latency: \`${latency}ms\``);
+            }
+
+            if (interaction.commandName === 'history') {
+                if (config.history_settings?.enable === false) {
+                    return interaction.reply({ content: "⚠️ The history command is currently disabled in the configuration.", ephemeral: true });
+                }
+                await interaction.deferReply({ ephemeral: true });
+
+                const fs = require("node:fs");
+                const path = require("node:path");
+
+                const historyPath = path.join(__dirname, "../history.json");
+                if (!fs.existsSync(historyPath)) {
+                    return interaction.editReply("⚠️ No historical data collected yet. Please wait for the bot to collect data points.");
+                }
+
+                let history = [];
+                try {
+                    history = JSON.parse(fs.readFileSync(historyPath, "utf8"));
+                } catch (err) {
+                    return interaction.editReply("❌ Failed to parse historical data.");
+                }
+
+                if (history.length < 2) {
+                    return interaction.editReply("⚠️ Not enough historical data collected yet. Please wait for the bot to collect more data points.");
+                }
+
+                const labels = history.map(h => {
+                    const d = new Date(h.timestamp);
+                    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+                });
+                const serversData = history.map(h => h.servers);
+                const ramData = history.map(h => Math.round(h.memoryAllocated / 102.4) / 10); // GB
+
+                const chartConfig = {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Servers',
+                                data: serversData,
+                                borderColor: '#5865F2',
+                                backgroundColor: 'rgba(88, 101, 242, 0.1)',
+                                yAxisID: 'y1',
+                                fill: true
+                            },
+                            {
+                                label: 'RAM (GB)',
+                                data: ramData,
+                                borderColor: '#57F287',
+                                yAxisID: 'y2'
+                            }
+                        ]
+                    },
+                    options: {
+                        title: {
+                            display: true,
+                            text: '24-Hour Growth & Resource Trends',
+                            fontColor: '#f2f3f5',
+                            fontSize: 14
+                        },
+                        legend: {
+                            labels: { fontColor: '#dbdee1' }
+                        },
+                        scales: {
+                            yAxes: [
+                                {
+                                    id: 'y1',
+                                    ticks: { fontColor: '#5865F2', beginAtZero: true },
+                                    gridLines: { color: '#3f4248' }
+                                },
+                                {
+                                    id: 'y2',
+                                    position: 'right',
+                                    ticks: { fontColor: '#57F287', beginAtZero: true },
+                                    gridLines: { drawOnChartArea: false }
+                                }
+                            ],
+                            xAxes: [{
+                                ticks: { fontColor: '#949ba4' },
+                                gridLines: { color: '#3f4248' }
+                            }]
+                        }
+                    }
+                };
+
+                const chartUrl = `https://quickchart.io/chart?bkg=%232b2d31&w=600&h=300&c=${encodeURIComponent(JSON.stringify(chartConfig))}`;
+
+                const container = {
+                    type: 17, // Container
+                    accent_color: 5793010, // Discord Blurple
+                    components: [
+                        {
+                            type: 12, // MediaGallery
+                            items: [
+                                {
+                                    media: {
+                                        url: chartUrl
+                                    },
+                                    description: "Historical Trends Chart"
+                                }
+                            ]
+                        }
+                    ]
+                };
+
+                return interaction.editReply({
+                    components: [makeRaw(container)],
+                    flags: 32768 // MessageFlags.IsComponentsV2
+                });
             }
 
             if (interaction.commandName === 'refresh') {
