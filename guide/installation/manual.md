@@ -15,10 +15,6 @@
         2. Install PM2 using `npm install -g pm2` command.
 
         2. Run `pm2 start index.js -n CalagopusStats` to start the app/bot.
-
-    - Using [nodejs-generic](https://github.com/pelican-eggs/generic/tree/main/nodejs) egg
-
-        1. Just start the server to start the app/bot.
         
 3. Answer the prompted questions in the console to set up the app/bot.
 

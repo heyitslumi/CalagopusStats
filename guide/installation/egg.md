@@ -7,9 +7,10 @@ Installing **CalagopusStats** via Pterodactyl or Pelican panel is the recommende
 ### 🥚 1. Import the Egg
 
 1. Download the custom egg template: [`calagopusstats-egg.json`](https://raw.githubusercontent.com/heyitslumi/CalagopusStats/main/calagopusstats-egg.json)
-2. Import the JSON egg file into your Pterodactyl or Pelican Panel:
+2. Import the JSON egg file into your Pterodactyl or Pelican or Calagopus Panel:
    - **Pterodactyl:** Panel Admin -> Nests -> Import Egg
    - **Pelican:** Admin Portal -> Eggs -> Import / Add
+   - **Calagopus:** Admin Portal -> Nests -> Your desired nest -> Eggs -> Import
 
 ---
 
@@ -24,20 +25,6 @@ Installing **CalagopusStats** via Pterodactyl or Pelican panel is the recommende
    - `DiscordChannel` (Discord text channel ID for status updates)
 
 *Note: If these 4 variables are defined in the panel, the bot will auto-bypass the setup wizard and boot up instantly!*
-
----
-
-### 🥚 3. Alternative: Console Interactive Setup
-
-If you prefer to configure the bot via the console instead of panel environment variables:
-
-1. Leave the startup/environment variables blank in the panel settings.
-2. Complete server installation and click **Start**.
-3. Open the server console.
-4. The interactive `@clack/prompts` wizard will boot and prompt you for the credentials. Use the console text input to answer each step:
-   - Use the arrow keys (if TTY is supported) or console answers to confirm.
-   - Enter your credentials (keys and tokens are masked).
-   - Once confirmed, the configurations will write to `.env` and `config.yml` automatically, and the bot will start running.
 
 ---
 
