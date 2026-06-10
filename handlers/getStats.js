@@ -12,6 +12,7 @@ const webhook = require("./webhook.js");
 const cliColor = require("cli-color");
 const path = require('node:path');
 const fs = require("node:fs");
+const logger = require("./logger.js");
 
 module.exports = async function getStats(client) {
     try {
@@ -23,7 +24,7 @@ module.exports = async function getStats(client) {
             }
         })()
 
-        console.log(cliColor.cyanBright("[CalagopusStats] ") + cliColor.yellow("Retrieving panel nodes..."))
+        logger.system("Retrieving panel nodes...");
         const nodesStats = await getNodesDetails();
         if (!nodesStats) throw new Error("Failed to get nodes attributes");
 
@@ -34,7 +35,7 @@ module.exports = async function getStats(client) {
 
         const statusPromises = nodesStats.slice(0, config.nodes_settings.limit).map(async (node) => {
             const isMaintenance = maintenanceList.includes(node.attributes.id) || maintenanceList.includes(node.attributes.name);
-            console.log(cliColor.cyanBright("[CalagopusStats] ") + cliColor.yellow(`Checking ${cliColor.blueBright(node.attributes.name)} status...`))
+            logger.info(`Checking ${cliColor.blueBright(node.attributes.name)} status...`);
             // Cap status check timeout at 2 seconds so offline nodes do not delay the scan loop
             const statusTimeoutMs = Math.min(config.timeout * 1000, 2000);
             const nodeStatusResult = await promiseTimeout(getWingsStatus(node), statusTimeoutMs);
@@ -57,7 +58,7 @@ module.exports = async function getStats(client) {
                             .setDescription(`Node \`${node.attributes.name}\` is currently offline`),
                         node.attributes.name
                     )
-                console.log(cliColor.cyanBright("[CalagopusStats] ") + cliColor.redBright(`Node ${cliColor.blueBright(node.attributes.name)} is currently offline.`))
+                logger.warn(`Node ${cliColor.blueBright(node.attributes.name)} is currently offline.`);
             } else {
                 if (cache && !cache.nodes.find((n) => n.attributes.id === node.attributes.id)?.status && !isMaintenance)
                     webhook(
@@ -299,15 +300,16 @@ module.exports = async function getStats(client) {
         
         const isRateLimited = error.response && error.response.status === 429;
         if (isRateLimited) {
-            console.log(cliColor.cyanBright("[CalagopusStats] ") + cliColor.redBright("Calagopus Panel API Rate Limit (429) hit! Pausing stats checks for 60 seconds..."));
+            logger.warn("Calagopus Panel API Rate Limit (429) hit! Pausing stats checks for 60 seconds...");
         } else {
-            console.log(cliColor.cyanBright("[CalagopusStats] ") + cliColor.redBright("Panel is currently offline."));
+            logger.error("Panel is currently offline.");
         }
 
         return fs.readFile(path.join(__dirname, "../cache.json"), (err, data) => {
             if (err) {
                 sendMessage({ client, cache: false, panel: false, rateLimited: isRateLimited, delay: isRateLimited ? 60 : undefined });
-                return console.log(cliColor.cyanBright("[CalagopusStats] ") + cliColor.redBright("Last cache was not found!"));
+                logger.error("Last cache was not found!");
+                return;
             }
 
             try {
@@ -340,7 +342,7 @@ module.exports = async function getStats(client) {
                 results.delay = isRateLimited ? 60 : undefined
                 return sendMessage(results);
             } catch {
-                console.log(cliColor.cyanBright("[CalagopusStats] ") + cliColor.redBright("Something went wrong with cache data..."));
+                logger.error("Something went wrong with cache data...");
 
                 return sendMessage({ client, cache: false, panel: false, rateLimited: isRateLimited, delay: isRateLimited ? 60 : undefined });
             }

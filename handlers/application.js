@@ -2,6 +2,7 @@ require("dotenv").config();
 const { Client, GatewayIntentBits, ActivityType, REST, Routes, SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require("discord.js");
 const config = require("./configuration.js");
 const cliColor = require("cli-color");
+const logger = require("./logger.js");
 
 const makeRaw = (obj) => {
     if (!obj || typeof obj !== 'object') return obj;
@@ -42,7 +43,7 @@ async function getAllNodesFromPanel() {
 }
 
 module.exports = function Application() {
-    console.log(cliColor.cyanBright("[CalagopusStats] ") + cliColor.green("Starting app..."));
+    logger.system("Starting app...");
 
     const client = new Client({
         intents: [GatewayIntentBits.Guilds]
@@ -51,7 +52,7 @@ module.exports = function Application() {
     client.getStats = require("./getStats.js");
 
     client.once("ready", async () => {
-        console.log(cliColor.cyanBright("[CalagopusStats] ") + cliColor.green(`${cliColor.blueBright(client.user.tag)} is online!`));
+        logger.success(`${client.user.tag} is online!`);
 
         if (config.presence.enable) {
             let activityType = ActivityType.Watching;
@@ -207,14 +208,14 @@ module.exports = function Application() {
 
                 const commands = rawCommands.map(command => command.toJSON());
 
-                console.log(cliColor.cyanBright("[CalagopusStats] ") + cliColor.yellow("Registering slash commands..."));
+                logger.system("Registering slash commands...");
                 await rest.put(
                     Routes.applicationCommands(client.user.id),
                     { body: commands }
                 );
-                console.log(cliColor.cyanBright("[CalagopusStats] ") + cliColor.green("Slash commands successfully registered!"));
+                logger.success("Slash commands successfully registered!");
             } catch (error) {
-                console.error(cliColor.cyanBright("[CalagopusStats] ") + cliColor.redBright("Failed to register slash commands:"), error);
+                logger.error("Failed to register slash commands: " + error.message);
             }
         };
 
@@ -1175,7 +1176,7 @@ module.exports = function Application() {
     try {
         client.login(process.env?.DiscordBotToken);
     } catch {
-        console.error(cliColor.cyanBright("[CalagopusStats] ") + cliColor.redBright("Discord Error | Invalid Discord Bot Token! Make sure you have the correct token in the config!"));
+        logger.error("Discord Error | Invalid Discord Bot Token! Make sure you have the correct token in the config!");
         process.exit();
     }
 }

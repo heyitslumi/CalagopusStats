@@ -3,6 +3,7 @@ const cliColor = require("cli-color");
 const package = require("./package.json");
 const axios = require("axios");
 const errorLogging = require("./handlers/errorLogging.js");
+const logger = require("./handlers/logger.js");
 
 process.stdout.write(cliColor.reset);
 if (fs.existsSync("logs.txt")) {
@@ -19,13 +20,16 @@ console.log(
 );
 
 console.log(
-    ` \nCopyright © ${new Date().getFullYear()} Lumi\n ` +
-    " \n Source: https://github.com/heyitslumi/CalagopusStats" +
-    " \nLicense: https://github.com/heyitslumi/CalagopusStats/blob/main/LICENSE" +
-    ` \n \n${package.description}\n `
+    `  ${cliColor.blackBright("─────────────── [ Project Details ] ───────────────")}\n` +
+    `  ${cliColor.cyanBright("●")} ${cliColor.bold("Version")} : ${cliColor.yellowBright(package.version)}\n` +
+    `  ${cliColor.cyanBright("●")} ${cliColor.bold("Author")}  : ${cliColor.white("Lumi")}\n` +
+    `  ${cliColor.cyanBright("●")} ${cliColor.bold("Source")}  : ${cliColor.blueBright("https://github.com/heyitslumi/CalagopusStats")}\n` +
+    `  ${cliColor.cyanBright("●")} ${cliColor.bold("License")} : ${cliColor.blackBright("MIT")}\n` +
+    `  ${cliColor.blackBright("───────────────────────────────────────────────────")}\n`
 );
 
-if (!fs.existsSync(".env") || !fs.existsSync(".setup-complete")) return require("./handlers/setup.js")();
+const hasEnvConfig = process.env.PanelURL && process.env.PanelKEY && process.env.DiscordBotToken && process.env.DiscordChannel;
+if (!hasEnvConfig && (!fs.existsSync(".env") || !fs.existsSync(".setup-complete"))) return require("./handlers/setup.js")();
 
 axios.get("https://raw.githubusercontent.com/heyitslumi/CalagopusStats/refs/heads/main/package.json").then(response => {
     if (response.data && response.data.version !== package.version) console.log(
@@ -35,7 +39,7 @@ axios.get("https://raw.githubusercontent.com/heyitslumi/CalagopusStats/refs/head
         cliColor.redBright(`   Make sure to backup ${cliColor.blueBright("config.yml")} and ${cliColor.blueBright(".env")} before updating.\n`) +
         cliColor.yellowBright(`+============================================================+`)
     )
-}).catch(error => console.log(`${cliColor.cyanBright("[CalagopusStats]")} ${cliColor.redBright("Failed to check for updates.")}`));
+}).catch(error => logger.error("Failed to check for updates."));
 
 process.on('uncaughtException', (error) => errorLogging(error))
 process.on('unhandledRejection', (error) => errorLogging(error))

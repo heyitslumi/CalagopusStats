@@ -3,6 +3,7 @@ const convertUnits = require("./convertUnits.js");
 const errorLogging = require("./errorLogging.js");
 const config = require("./configuration.js");
 const cliColor = require("cli-color");
+const logger = require("./logger.js");
 
 const colorToInt = (hex) => {
     if (!hex) return 5793010; // default discord blurple
@@ -406,7 +407,7 @@ module.exports = async function sendMessage({ client, cache, panel, uptime, node
         const messages = await channel.messages.fetch({ limit: 10 });
         const botMessage = messages.find(msg => msg.author.id === client.user.id);
 
-        console.log(cliColor.cyanBright("[CalagopusStats] ") + cliColor.green(`Panel stats successfully posted to the ${cliColor.blueBright(channel.name)} channel!`));
+        logger.success(`Panel stats successfully posted to the ${cliColor.blueBright(channel.name)} channel!`);
 
         const nextDelay = delay ? delay * 1000 : config.refresh * 1000;
         setTimeout(() => client.getStats(client), nextDelay);
@@ -440,19 +441,19 @@ module.exports = async function sendMessage({ client, cache, panel, uptime, node
     } catch (error) {
         try {
             if (error.rawError?.code === 429) {
-                console.error(cliColor.cyanBright("[CalagopusStats] ") + cliColor.redBright("Error 429 | Your IP has been rate limited by either Discord or your website. If it's a rate limit with Discord, you must wait. If it's a issue with your website, consider whitelisting your server IP."));
+                logger.error("Error 429 | Your IP has been rate limited by either Discord or your website. If it's a rate limit with Discord, you must wait. If it's an issue with your website, consider whitelisting your server IP.");
             } else if (error.rawError?.code === 403) {
-                console.error(cliColor.cyanBright("[CalagopusStats] ") + cliColor.redBright("FORBIDDEN | The channel ID you provided is incorrect. Please double check you have the right ID. If you're not sure, read our documentation: \n>>https://github.com/heyitslumi/CalagopusStats#getting-channel-id<<"));
+                logger.error("FORBIDDEN | The channel ID you provided is incorrect. Please double check you have the right ID. If you're not sure, read our documentation: \n>>https://github.com/heyitslumi/CalagopusStats#getting-channel-id<<");
             } else if (error.code === "ENOTFOUND") {
-                console.error(cliColor.cyanBright("[CalagopusStats] ") + cliColor.redBright("ENOTFOUND | DNS Error. Ensure your network connection and DNS server are functioning correctly."));
+                logger.error("ENOTFOUND | DNS Error. Ensure your network connection and DNS server are functioning correctly.");
             } else if (error.rawError?.code === 50001) {
-                console.error(cliColor.cyanBright("[CalagopusStats] ") + cliColor.redBright("Discord Error | Your discord bot doesn't have access to see/send message/edit message in the channel!"));
+                logger.error("Discord Error | Your discord bot doesn't have access to see/send message/edit message in the channel!");
             } else if (error.rawError?.errors && Object?.values(error.rawError.errors)[0]?._errors[0]?.code === "MAX_EMBED_SIZE_EXCEEDED") {
-                console.error(cliColor.cyanBright("[CalagopusStats] ") + cliColor.redBright("Discord Error | Embed message limit exceeded! Please limit or decrease the nodes that need to be shown in the config!"));
+                logger.error("Discord Error | Embed message limit exceeded! Please limit or decrease the nodes that need to be shown in the config!");
             } else if (error.rawError?.errors && Object?.values(error.rawError.errors)[0]?._errors[0]?.code) {
-                console.error(Object.values(error.rawError.errors)[0]._errors[0].message);
+                logger.error(Object.values(error.rawError.errors)[0]._errors[0].message);
             } else {
-                console.error(cliColor.cyanBright("[CalagopusStats] ") + cliColor.redBright("Discord Error"), error);
+                logger.error("Discord Error: " + error.message);
             }
             errorLogging(error)
             process.exit();

@@ -1,9 +1,10 @@
 const config = require("./configuration.js");
 const cliColor = require("cli-color");
 const axios = require("axios");
+const logger = require("./logger.js");
 
 module.exports = async function getServers() {
-    console.log(cliColor.cyanBright("[CalagopusStats] ") + cliColor.yellow("Retrieving panel servers..."));
+    logger.system("Retrieving panel servers...");
     return axios(`${new URL(process.env?.PanelURL).origin}/api/admin/servers?page=1&per_page=1`, {
         method: "GET",
         headers: {

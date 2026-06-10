@@ -1,6 +1,7 @@
 const axios = require("axios")
 const config = require("./configuration")
 const cliColor = require("cli-color")
+const logger = require("./logger.js")
 
 const colorToInt = (hex) => {
     if (!hex) return 5793010; // default discord blurple
@@ -130,7 +131,7 @@ module.exports = async function webhook(embed, nodeName) {
             });
         } catch (error) {
             if (config.log_error) console.error(error);
-            console.log(cliColor.cyanBright("[CalagopusStats] ") + cliColor.redBright("Failed to send webhook notification. Check webhook URL or logs."));
+            logger.error("Failed to send webhook notification. Check webhook URL or logs.");
         }
     }
 }
