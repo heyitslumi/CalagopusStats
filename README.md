@@ -1,16 +1,11 @@
-# CalagopusStats
-
+> [!CAUTION]
 > Most of the code was fed to Gemini 3.5 Flash (Medium), and is a fork of [PteroStats](https://github.com/HirziDevs/PteroStats) by HirziDevs, that is licensed under the MIT license. With this note, I cannot guarantee the reliability of this code.
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/heyitslumi/CalagopusStats/main/guide/logo.png" alt="CalagopusStats Logo" width="200" style="border-radius: 12px;"/>
-</p>
+# 🦊 CalagopusStats
 
 **CalagopusStats** is a premium, highly configurable Discord Bot designed to monitor your Calagopus or Pterodactyl Panel stats and post beautiful real-time node resource allocation summaries directly to your Discord server.
 
----
-
-## ⚡ Features
+## 🧩 Features
 
 - 🛠️ **Modern Setup Wizard:** Built using `@clack/prompts` featuring automatic credential defaults pre-loading, input masking, immediate API verification, and an interactive review/edit navigation dashboard.
 - 📊 **Dynamic Allocation Charts:** Grouped node memory allocation comparisons and stacked capacity diagrams rendered dynamically inside Discord Message Components V2.
@@ -19,8 +14,6 @@
 - ⏰ **Process Timezone Configuration:** Native timezone adjustment (`timezone` config key) that updates all console logs and timestamp formatting to your local region (e.g. `Europe/Paris`).
 - 🌐 **Docker Health Checks:** Built-in `healthcheck.js` script to natively monitor container health state and auto-restart if the bot hangs.
 - 📦 **Container Bypasses:** Automatically detects environment variables in Docker or Pterodactyl Eggs to skip the wizard and boot up instantly.
-
----
 
 ## 🎮 Slash Commands
 
@@ -37,8 +30,6 @@
 | `/alert-test` | Dispatch mock online/offline test cards to verify alert webhooks. | Administrator |
 | `/panel-sysinfo` | View hardware specs, database size, and OS info of the Panel host. | Administrator |
 
----
-
 ## 🚀 Installation & Deployment
 
 Select your preferred deployment method below:
@@ -52,7 +43,6 @@ Select your preferred deployment method below:
 Create a `docker-compose.yml` file and mount your `config.yml` configuration:
 
 ```yaml
-version: '3.3'
 services:
   calagopusstats:
     container_name: calagopusstats
@@ -78,8 +68,6 @@ Run the container:
 docker compose up -d
 ```
 
----
-
 ## 📖 Configuration & Guides
 
 - ⚙️ **[Changing Env Configuration](guide/changing-env-configuration.md)**
@@ -88,8 +76,6 @@ docker compose up -d
 - 🎨 **[How to use Custom Emojis](guide/custom-emoji.md)**
 - 🚫 **[Blacklist Nodes Guide](guide/blacklist-nodes.md)**
 - 🔔 **[Notifier (Discord Webhook Alerts) Guide](guide/notifier.md)**
-
----
 
 ## 🤝 Contributing
 
